@@ -7,8 +7,8 @@
 ## 2026-08-12
 
 ### 오늘 목표
-- [ ] User 엔티티 + Repository
-- [ ] SecurityConfig (PasswordEncoder, 로그인 URL 설정)
-- [ ] UserDetailsService 구현체 (User 조회 → Spring Security용 객체 변환)
-- [ ] 회원가입 컨트롤러/서비스 (직접 구현)
-- [ ] 회원가입/로그인 화면 (Thymeleaf)
+- [X] User 엔티티 + Repository
+- [X] SecurityConfig (PasswordEncoder, 로그인 URL 설정)
+- [X] UserDetailsService 구현체 (User 조회 → Spring Security용 객체 변환)
+- [X] 회원가입 컨트롤러/서비스 (직접 구현)
+- [X] 회원가입/로그인 화면 (Thymeleaf)
