@@ -37,7 +37,7 @@
             <div class="product-card">
                 <img th:src="${product.imageUrl}" class="product-img" alt="상품 이미지">
                 <div class="p-3">
-                    <div class="text-muted small mb-1" th:text="${product.category}">카테고리</div>
+                    <div class="text-muted small mb-1" th:text="${product.category.name}">카테고리</div>
                     <div class="fw-semibold mb-2" th:text="${product.name}">상품명</div>
                     <div class="fw-bold mb-3" th:text="${#numbers.formatInteger(product.price, 0, 'COMMA')} + '원'">가격</div>
                     <button type="button" class="btn btn-outline-dark btn-sm w-100">장바구니 담기</button>
