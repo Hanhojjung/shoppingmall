@@ -24,3 +24,13 @@
 - [X] 상품 상세 조회 서비스/컨트롤러
 - [X] 상품 목록/상세 화면 (Thymeleaf)
 - [ ] 홈 화면 mock 데이터를 실제 상품 데이터로 교체 (다음 작업)
+
+---
+
+## 2026-08-26
+
+### 오늘 목표
+- [ ] HomeController에 ProductService 주입
+- [ ] "최신 상품" 조회 메서드 추가 (Repository/Service, createdAt 기준 정렬)
+- [ ] MockProduct 내부 클래스 / mockProducts() 제거
+- [ ] home.html 실제 Product 데이터 바인딩으로 수정 (product.category.name, null 가드)

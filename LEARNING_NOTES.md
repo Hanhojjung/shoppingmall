@@ -55,4 +55,46 @@ INT는 약 -21억~21억 범위(4바이트), BIGINT는 그보다 훨씬 큰 범�
 
 ---
 
+## Spring Security
+
+**`UserDetailsService.loadUserByUsername()`가 하는 일 / 안 하는 일**
+이 메서드는 "이메일로 유저를 찾아서 Spring Security가 이해할 수 있는 형태(`UserDetails`)로 변환"만 한다. 비밀번호가 맞는지 비교하는 로직은 여기 없음. 실제 비교는 `DaoAuthenticationProvider`가 반환된 `UserDetails.getPassword()`(DB의 암호화된 비밀번호)와 사용자가 입력한 원문 비밀번호를 `PasswordEncoder.matches()`로 비교하며 수행한다.
+이 프로젝트: `CustomUserDetailsService.loadUserByUsername()` → 이메일로 `User` 조회 → `CustomUserDetails`로 감싸서 반환.
+
+**`UserDetails` 구현체가 담고 있는 정보**
+`CustomUserDetails`는 단순 DTO가 아니라 Spring Security가 인증/인가 판단에 쓰는 정보 묶음이다.
+- `getPassword()`: DB의 암호화된 비밀번호 → 비교용
+- `getAuthorities()`: 권한 목록(`ROLE_XXX` 등) → 인가(authorization) 판단용
+- `isEnabled()` / `isAccountNonLocked()` 등: 계정 상태 → 로그인 자체를 막을지 여부
+
+이 프로젝트는 `UserStatus.SUSPENDED`면 `isAccountNonLocked() = false`, `UserStatus.ACTIVE`일 때만 `isEnabled() = true`로 구현해서, 회원 상태(정지/활성)로 로그인 가능 여부를 제어하고 있음.
+
+**`CustomUserDetailsService`를 어떻게 자동으로 찾아 쓰는가 (명시적 연결 코드 없음)**
+`SecurityConfig`에는 `CustomUserDetailsService`를 직접 지정하는 코드가 없다. 컨테이너 안에 `UserDetailsService` 빈이 1개, `PasswordEncoder` 빈이 1개만 있으면, Spring Security가 내부적으로 `DaoAuthenticationProvider`를 자동 구성해서 이 둘을 엮어준다. 구현체가 2개 이상이거나 커스텀 인증 방식이 필요해지면 그때 `AuthenticationManagerBuilder`/`AuthenticationProvider` 빈을 명시적으로 등록해야 함.
+
+**로그인 화면 전체 흐름 — 같은 `/login`이지만 GET과 POST는 완전히 다른 코드가 처리**
+헷갈리기 쉬운 지점: `GET /login`과 `POST /login`은 URL만 같을 뿐 처리 주체가 다르다.
+- `GET /login`: 우리가 만든 `LoginController.loginForm()`이 처리 → `user/login.html` 렌더링. 진입점은 `navbar.html`의 "로그인" 링크(`th:href="@{/login}"`)나 `signup.html`의 "로그인" 링크.
+- `POST /login`: 컨트롤러에 `@PostMapping("/login")`이 아예 없음. `SecurityConfig`의 `formLogin(...)`이 자동으로 등록하는 `UsernamePasswordAuthenticationFilter`가 이 요청을 가로채서 처리 — 컨트롤러까지 도달하지 않음.
+
+전체 흐름:
+```
+navbar "로그인" 클릭 → GET /login → LoginController → login.html 렌더링
+login.html 폼 제출 → POST /login → [Spring Security 필터가 가로챔]
+  → CustomUserDetailsService.loadUserByUsername(email)
+  → PasswordEncoder.matches(입력값, DB값) + 계정 상태 체크
+  → 성공: SecurityContext에 인증 저장 + "/"로 리다이렉트 (defaultSuccessUrl)
+  → 실패: /login?error로 리다이렉트 (기본값)
+```
+
+**`loginPage`와 `loginProcessingUrl`의 관계 (기본값 상속, 우연 아님)**
+`formLogin()`에는 별개의 두 설정이 있다.
+- `loginPage(url)`: 로그인 화면 GET 경로 + 미인증 시 리다이렉트할 경로
+- `loginProcessingUrl(url)`: 로그인 폼 제출(POST)을 받을 경로
+
+이 프로젝트는 `loginProcessingUrl`을 따로 설정하지 않았는데, 이때 `/login`으로 정해지는 건 우연이 아니라 Spring Security 내부 로직(`AbstractAuthenticationFilterConfigurer.updateAuthenticationDefaults()`) 때문이다. `loginProcessingUrl`이 `null`이면 `loginPage` 값을 그대로 물려받도록 되어 있음 (Spring Security 공식 소스로 확인: `if (this.loginProcessingUrl == null) { loginProcessingUrl(this.loginPage); }`).
+→ 만약 로그인 폼 action을 다른 경로로 바꾸고 싶다면, `loginProcessingUrl`을 명시적으로 지정해야 폼과 매칭됨.
+
+---
+
 ## (다음 항목은 앞으로 질문할 때마다 追加)
