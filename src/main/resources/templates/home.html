@@ -35,7 +35,8 @@
     <div class="row row-cols-2 row-cols-md-4 g-4">
         <div class="col" th:each="product : ${products}">
             <div class="product-card">
-                <img th:src="${product.imageUrl}" class="product-img" alt="상품 이미지">
+                <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" class="product-img" alt="상품 이미지">
+                <div th:unless ="${product.imageUrl}" class="product-img no-image">상품 이미지 없음</div>
                 <div class="p-3">
                     <div class="text-muted small mb-1" th:text="${product.category.name}">카테고리</div>
                     <div class="fw-semibold mb-2" th:text="${product.name}">상품명</div>

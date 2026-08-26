@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +18,7 @@ import java.util.List;
 public class HomeController {
     private final ProductService productService;
     @GetMapping("/")
-    public String home(Model model, @PageableDefault(size = 8) Pageable pageable) {
+    public String home(Model model, @PageableDefault(size = 8, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         model.addAttribute("products", productService.getProductList(pageable).getContent());
         return "home";
     }

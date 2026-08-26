@@ -26,3 +26,12 @@ body {
     opacity: 0.9;
     color: #fff;
 }
+
+.no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    color: #9ca3af;
+    font-size: 0.85rem;
+}

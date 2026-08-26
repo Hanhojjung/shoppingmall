@@ -16,7 +16,8 @@
 <section class="container my-5">
     <div class="row g-5">
         <div class="col-md-6">
-            <img th:src="${product.imageUrl}" class="detail-img" alt="상품 이미지">
+            <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" class="detail-img" alt="상품 이미지">
+            <div th:unless="${product.imageUrl}" class="detail-img no-image">상품이미지 없음</div>
         </div>
         <div class="col-md-6">
             <div class="text-muted mb-2" th:text="${product.category.name}">카테고리</div>
