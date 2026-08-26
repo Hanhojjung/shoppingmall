@@ -37,6 +37,28 @@ Lombok이 빌더 패턴을 자동 생성해주는 애노테이션. 생성자에 
 
 이 프로젝트에서는 `User`, `Product`, `Category` 모두 `@NoArgsConstructor(PROTECTED)` + `@Builder` 조합으로 통일해서 "무분별한 setter 노출 금지, 생성/변경 지점 명확화" 원칙을 지키고 있음.
 
+**JPA(애노테이션 매핑) vs MyBatis(SQL 직접 매핑) 비교**
+실무(레거시 Spring + MyBatis)에서는 아래처럼 SQL을 직접 짜고 `resultMap`으로 컬럼-필드를 수동 매핑함.
+```xml
+<select id="findProductWithCategory" resultMap="productResultMap">
+    SELECT p.*, c.name as category_name
+    FROM product p JOIN category c ON p.category_id = c.id
+    WHERE p.id = #{id}
+</select>
+```
+JPA에서는 연관관계 애노테이션 하나가 이 JOIN 쿼리 + 매핑을 대신함.
+```java
+@ManyToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "category_id")
+private Category category;
+```
+`product.getCategory().getName()`을 호출하는 시점에 Hibernate가 필요한 SELECT를 알아서 실행함.
+
+- **MyBatis 장점**: SQL이 코드에 그대로 보여서 언제 어떤 쿼리가 나가는지 예측 가능, 복잡한 쿼리 튜닝이 쉬움
+- **JPA 장점**: 생산성 높음(반복적인 CRUD/매핑 코드 불필요), 객체 그래프 탐색이 자연스러움
+- **JPA 단점/주의점**: 지연 로딩(`LAZY`) 때문에 "언제 실제 쿼리가 나가는지"가 코드만 봐서는 안 보임. Spring Boot는 기본적으로 **OSIV(Open Session In View)**가 켜져 있어서, 컨트롤러 로직이 끝나고 트랜잭션이 종료된 뒤에도 뷰(Thymeleaf) 렌더링 중에 지연 로딩된 연관관계(`product.category.name` 등)에 접근 가능함 — 편하지만 뷰 렌더링 중 쿼리가 터지는 걸 놓치기 쉬워 실무에서는 끄는 경우도 많음
+- 실무에서는 단순 CRUD는 JPA, 복잡한 통계/리포트성 쿼리는 QueryDSL이나 네이티브 쿼리로 섞어 쓰는 하이브리드 방식이 흔함
+
 ---
 
 ## MySQL

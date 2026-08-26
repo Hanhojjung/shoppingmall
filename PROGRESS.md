@@ -30,7 +30,9 @@
 ## 2026-08-26
 
 ### 오늘 목표
-- [ ] HomeController에 ProductService 주입
-- [ ] "최신 상품" 조회 메서드 추가 (Repository/Service, createdAt 기준 정렬)
-- [ ] MockProduct 내부 클래스 / mockProducts() 제거
-- [ ] home.html 실제 Product 데이터 바인딩으로 수정 (product.category.name, null 가드)
+- [X] HomeController에 ProductService 주입
+- [ ] "최신 상품" 조회 메서드 추가 (Repository/Service, createdAt 기준 정렬) — 현재는 정렬 조건 없이 상위 8개만 조회 중
+- [X] MockProduct 내부 클래스 / mockProducts() 제거
+- [ ] home.html 실제 Product 데이터 바인딩으로 수정 — category.name 바인딩은 완료, null 가드는 미반영
+- [X] SecurityConfig에 /products/** permitAll 추가 (체크리스트에 없던 작업, 추가 진행)
+- [X] 테스트용 상품 데이터 16건 등록 (체크리스트에 없던 작업, 추가 진행)
