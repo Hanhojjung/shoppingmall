@@ -23,12 +23,12 @@
 
 <section class="container my-5">
     <div class="d-flex gap-2 flex-wrap justify-content-center mb-5">
-        <span class="category-pill active">전체</span>
-        <span class="category-pill">패션</span>
-        <span class="category-pill">뷰티</span>
-        <span class="category-pill">가전</span>
-        <span class="category-pill">리빙</span>
-        <span class="category-pill">스포츠</span>
+        <a th:href="@{/products}" class="category-pill active text-decoration-none">전체</a>
+        <a th:href="@{/products(category='패션')}" class="category-pill ">패션</a>
+        <a th:href="@{/products(category='뷰티')}" class="category-pill ">뷰티</a>
+        <a th:href="@{/products(category='가전')}" class="category-pill ">가전</a>
+        <a th:href="@{/products(category='리빙')}" class="category-pill ">리빙</a>
+        <a th:href="@{/products(category='스포츠')}" class="category-pill ">스포츠</a>
     </div>
 
     <h2 id="featured" class="mb-4 fw-bold">지금 인기있는 상품</h2>
