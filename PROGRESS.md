@@ -43,7 +43,7 @@
 ## 2026-08-31 ~ 09-06 (다음주 목표)
 
 ### 목표
-- [ ] 카테고리별 상품 필터링 (상품 목록 화면에서 카테고리 선택 시 조회)
+- [X] 카테고리별 상품 필터링 (ProductRepository.findByCategoryName + ProductController @RequestParam 분기, home.html 카테고리 pill 링크 연동)
 - [ ] 상품 검색 기능 (상품명 기준)
 - [ ] 장바구니 엔티티 설계 (Cart / CartItem, User·Product와 연관관계)
 - [ ] 장바구니 담기 기능 (상품 상세 화면에서 "담기" 버튼 → CartItem 저장)
