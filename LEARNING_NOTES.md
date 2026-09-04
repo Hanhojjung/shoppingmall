@@ -37,6 +37,19 @@ Lombok이 빌더 패턴을 자동 생성해주는 애노테이션. 생성자에 
 
 이 프로젝트에서는 `User`, `Product`, `Category` 모두 `@NoArgsConstructor(PROTECTED)` + `@Builder` 조합으로 통일해서 "무분별한 setter 노출 금지, 생성/변경 지점 명확화" 원칙을 지키고 있음.
 
+**`@RequiredArgsConstructor` — 생성자 주입(DI) 자동화**
+Lombok이 클래스의 `final` 필드(또는 `@NonNull` 필드)를 파라미터로 받는 생성자를 자동 생성해주는 애노테이션. 예를 들어 `private final CategoryRepository categoryRepository;`만 선언하고 이 애노테이션을 붙이면, 아래 생성자를 직접 안 써도 자동으로 만들어진 것과 동일하게 동작함.
+```java
+public CategoryService(CategoryRepository categoryRepository) {
+    this.categoryRepository = categoryRepository;
+}
+```
+Spring은 클래스에 생성자가 **하나뿐**이면 `@Autowired` 없이도 그 생성자로 의존성을 자동 주입함(Spring 4.3+ 규칙). 그래서 `@RequiredArgsConstructor` + 이 Spring 규칙이 합쳐지면, 필드에 `private final Xxx xxx;`라고 선언만 해도 DI가 끝남 — `@Autowired`를 필드에 직접 붙이는 필드 주입 방식은 거의 안 씀.
+
+`final`을 쓰는 이유: 생성 시점에 반드시 값이 채워지도록 강제(누락되면 컴파일 에러) + 이후 재할당 불가(불변성) → 필드 주입보다 안전한 방식으로 여겨짐 (→ `@Setter` 안 쓰는 이유와 같은 맥락: 의도치 않은 변경을 막음).
+
+이 프로젝트는 `ProductService`, `CategoryService`, `UserService`, 각 `Controller` 등 거의 모든 클래스가 이 패턴(필드 주입 대신 생성자 주입)으로 통일돼 있음.
+
 **JPA(애노테이션 매핑) vs MyBatis(SQL 직접 매핑) 비교**
 실무(레거시 Spring + MyBatis)에서는 아래처럼 SQL을 직접 짜고 `resultMap`으로 컬럼-필드를 수동 매핑함.
 ```xml
