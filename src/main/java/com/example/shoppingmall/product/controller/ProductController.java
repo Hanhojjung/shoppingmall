@@ -21,10 +21,15 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public String list(@RequestParam(required = false) String category, @PageableDefault(size = 12) Pageable pageable, Model model) {
-        Page<Product> products = (category != null && !category.isBlank())
-                ? productService.findByCategoryName(category,pageable)
-                :productService.getProductList(pageable);
+    public String list(@RequestParam(required = false) String category, @RequestParam(required = false) String search, @PageableDefault(size = 12) Pageable pageable, Model model) {
+        Page<Product> products;
+        if (search != null && !search.isBlank()) {
+            products = productService.searchProducts(search, pageable);
+        } else if (category != null && !category.isBlank()) {
+            products = productService.findByCategoryName(category, pageable);
+        } else {
+            products = productService.getProductList(pageable);
+        }
         model.addAttribute("products", products);
         return "product/list";
     }

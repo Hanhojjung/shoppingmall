@@ -5,8 +5,11 @@
     <div class="container">
         <a class="navbar-brand fw-bold text-brand" th:href="@{/}">SHOPPINGMALL</a>
 
-        <input type="search" class="form-control d-none d-md-block mx-4" style="max-width: 420px;" placeholder="상품을 검색해보세요">
-
+        <form th:action="@{/products}" method="get" class="d-flex d-md-none ms-auto">
+            <input type="search" name="search" class="form-control me-2" placeholder="상품을 검색해보세요">
+            <button type="submit" class="btn btn-outline-dark">검색</button>
+        </form>
+        
         <div class="d-flex align-items-center gap-3 ms-auto">
             <a th:href="@{/cart}" class="text-dark fs-5" title="장바구니">
                 <i class="bi bi-cart3"></i>

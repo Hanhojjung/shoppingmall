@@ -9,4 +9,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findByCategoryName(String categoryName, Pageable pageable);
 
+    Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
+    
+
 }
